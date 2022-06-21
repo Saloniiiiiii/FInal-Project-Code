@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    .sendbutton {
+      position: absolute;
+      top: 95%;
+      left: 95%;
+    }
+    .backbutton {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+    }
+  </style>
+  <body>
+    <h1 align="center">Your Email has been sent</h1>
+    <div>
+      <button
+        onclick="location.href='menu1.html'"
+        class="backbutton"
+        id="backbtn"
+      >
+        Back
+      </button>
+    </div>
+
+    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+    <div class="sendbutton">
+      <button onclick="sendMail()" id="send-mail">Send mail</button>
+    </div>
+    <script src="script5.js"></script>
+    <script type="text/javascript">
+      /* exported gapiLoaded */
+      /* exported gisLoaded */
+      /* exported handleAuthClick */
+      /* exported handleSignoutClick */
+
+      // TODO(developer): Set to client ID and API key from the Developer Console
+      const CLIENT_ID =
+        "849383580469-u06jqtjkc905vq8ea6uogasusgir2d6k.apps.googleusercontent.com";
+      const API_KEY = "AIzaSyB2awudvGiEDt3xYy3bP8x4H3PmI-UrB7M";
+      const MAX_MAIL_COUNT = 20;
+
+      // Discovery doc URL for APIs used by the quickstart
+      const DISCOVERY_DOC =
+        "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest";
+
+      // Authorization scopes required by the API; multiple scopes can be
+      // included, separated by spaces.
+      const SCOPES =
+        "https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send";
+
+      let tokenClient;
+      let gapiInited = false;
+      let gisInited = false;
+
+      document.getElementById("authorize_button").style.visibility = "hidden";
+      // document.getElementById("signout_button").style.visibility = "hidden";
+      document.getElementById("send-mail").style.visibility = "hidden";
+
+      /**
+       * Callback after api.js is loaded.
+       */
+      function gapiLoaded() {
+        gapi.load("client", intializeGapiClient);
+      }
+
+      /**
+       * Callback after the API client is loaded. Loads the
+       * discovery doc to initialize the API.
+       */
+      async function intializeGapiClient() {
+        await gapi.client.init({
+          apiKey: API_KEY,
+          discoveryDocs: [DISCOVERY_DOC],
+        });
+        gapiInited = true;
+        maybeEnableButtons();
+      }
+
+      /**
+       * Callback after Google Identity Services are loaded.
+       */
+      function gisLoaded() {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: "", // defined later
+        });
+        gisInited = true;
+        maybeEnableButtons();
+      }
+
+      /**
+       * Enables user interaction after all libraries are loaded.
+       */
+      function maybeEnableButtons() {
+        if (gapiInited && gisInited) {
+          document.getElementById("authorize_button").style.visibility =
+            "visible";
+          //   debugger;
+          let accesstoken = localStorage.getItem("tokenaccess");
+          let typetoken = localStorage.getItem("tokentype");
+          let scopetoken = localStorage.getItem("tokenscope");
+          let timeexp = Number(localStorage.getItem("tokentime"));
+
+          // JSON.parse(tokenid);
+          gapi.client.setToken(accesstoken);
+        }
+
+        handleAuthClick();
+      }
+
+      /**
+       *  Sign in the user upon button click.
+       */
+      function handleAuthClick() {
+        tokenClient.callback = async (resp) => {
+          if (resp.error !== undefined) {
+            throw resp;
+          }
+          //     document.getElementById("signout_button").style.visibility =
+          //   "visible";
+          document.getElementById("send-mail").style.visibility = "visible";
+          // document.getElementById("authorize_button").innerText = "Refresh";
+          //await listEmails();
+          document.getElementById("send-mail").click();
+        };
+
+        // console.log(gapi.client.getToken());
+        if (gapi.client.getToken() === null) {
+          // Prompt the user to select a Google Account and ask for consent to share their data
+          // when establishing a new session.
+          tokenClient.requestAccessToken({ prompt: "consent" });
+        } else {
+          document.getElementById("send-mail").style.visibility = "visible";
+          document.getElementById("authorize_button").style.visibility =
+            "hidden";
+
+          // Skip display of account chooser and consent dialog for an existing session.
+          tokenClient.requestAccessToken({ prompt: "" });
+          setTimeout(finalmsg, 4000);
+        }
+      }
+      //---parse payload
+      function parseMailMeta({ result }) {
+        const obj = {};
+        obj["Snippet"] = result.snippet;
+        for (let i in result.payload.headers) {
+          const header = result.payload.headers[i];
+          if (header.name === "Date") {
+            obj["Date"] = header.value;
+          } else if (header.name === "Subject") {
+            obj["Subject"] = header.value;
+          } else if (header.name === "From") {
+            obj["From"] = header.value;
+          }
+        }
+        return obj;
+      }
+      //---- For sending email----
+      function makeBody(to, from, subject, message) {
+        const payload =
+          "From: " +
+          from +
+          "\r\n" +
+          "To: " +
+          to +
+          "\r\n" +
+          "Subject: " +
+          subject +
+          "\r\n\r\n" +
+          message;
+        var encodedEmail = btoa(payload)
+          .replace(/\+/g, "-")
+          .replace(/\//g, "_");
+        return encodedEmail;
+      }
+      async function sendMail() {
+        var raw = makeBody(
+          localStorage.getItem("toid"), //to
+          "moderatedtesting@gmail.com", // from
+          localStorage.getItem("subb"), //sub
+          localStorage.getItem("messagebody") //body
+        );
+
+        await gapi.client.gmail.users.messages.send({
+          userId: "me",
+          resource: {
+            raw: raw,
+          },
+        });
+      }
+
+      function sendMessage(auth) {
+        var gmail = google.gmail("v1");
+        var raw = makeBody(
+          "xxxxxxxx@hotmail.com",
+          "xxxxxxx@gmail.com",
+          "test subject",
+          "test message"
+        );
+        gmail.users.messages.send(
+          {
+            auth: auth,
+            userId: "me",
+            resource: {
+              raw: raw,
+            },
+          },
+          function (err, response) {
+            console.log(err || response);
+          }
+        );
+      }
+      //---- For sending email----
+    </script>
+    <script
+      async
+      defer
+      src="https://apis.google.com/js/api.js"
+      onload="gapiLoaded()"
+    ></script>
+    <script
+      async
+      defer
+      src="https://accounts.google.com/gsi/client"
+      onload="gisLoaded()"
+    ></script>
+    <!--->  <script>
+      function clicksend() {
+        document.getElementById("sendbutton").click();
+      }
+    </script>-->
+  </body>
+</html>

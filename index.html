@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: linear-gradient(
+          180deg,
+          rgba(13, 20, 54, 1) 0%,
+          rgba(40, 57, 119, 1) 30%,
+          rgba(63, 69, 125, 1) 50%,
+          rgba(40, 57, 119, 1) 70%,
+          rgba(20, 36, 93, 1) 100%
+        );
+      }
+
+      .btnh1 {
+        position: absolute;
+        top: 50%;
+        left: 47%;
+      }
+      .photo {
+        position: absolute;
+        top: 5%;
+        left: 43%;
+        border-radius: 8px;
+        box-shadow: 5px 5px 5px rgba(5, 5, 5, 0.5);
+      }
+      .textbox {
+        position: absolute;
+        top: 65%;
+        left: 84%;
+      }
+      .button {
+        display: inline-block;
+        padding: 0.75rem 1.25rem;
+        border-radius: 10rem;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 1rem;
+        letter-spacing: 0.15rem;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+      .button:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #0cf;
+        border-radius: 10rem;
+        z-index: -2;
+      }
+      .button:before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        background-color: #008fb3;
+        transition: all 0.3s;
+        border-radius: 10rem;
+        z-index: -1;
+      }
+      .button:hover {
+        color: #fff;
+      }
+      .button:hover:before {
+        width: 100%;
+      }
+
+      .btnH {
+        background-color: #d2ddd9;
+        border: 2px solid #4caf50;
+        color: white;
+        padding: 1px 1px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 27px;
+        margin: 0px 0px;
+        cursor: pointer;
+        border-radius: 4px;
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+      .btnp1 {
+        position: absolute;
+        bottom: 5%;
+        left: 95%;
+      }
+      .btnc1 {
+        position: absolute;
+        bottom: 5%;
+        left: 84%;
+      }
+      .animate-charcter {
+        text-transform: uppercase;
+        background-image: linear-gradient(
+          -225deg,
+          #231557 0%,
+          #44107a 29%,
+          #ff1361 67%,
+          #fff800 100%
+        );
+        position: absolute;
+        top: 18%;
+        left: 25%;
+        background-size: auto auto;
+        background-clip: border-box;
+        background-size: 150% auto;
+        color: #fff;
+        background-clip: text;
+        text-fill-color: transparent;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: textclip 2s linear infinite;
+        display: inline-block;
+        font-size: 100px;
+      }
+
+      @keyframes textclip {
+        to {
+          background-position: 200% center;
+        }
+      }
+      .menub {
+        position: absolute;
+        top: 95%;
+        left: 95%;
+      }
+      .btnH .btnP .btnC {
+        margin-top: 184px;
+        width: 367px;
+        height: 50px;
+        border-radius: 16px;
+        font-size: 30px;
+        font-weight: 900;
+        border: inset;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="photo">
+      <img
+        src="logo.png.png"
+        alt="Paris"
+        width="190"
+        height="145"
+        border-radius:
+        8px;
+      />
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h3 class="animate-charcter">EYE-DOL AID</h3>
+        </div>
+      </div>
+    </div>
+    <div class="homepage">
+      <div class="btnh1">
+        <button class="button" id="lbtn" onclick="handleAuthClick()">
+          Login
+        </button></div>
+        <div>
+        <button
+          class="menub"
+          id="menu"
+          onclick="location.href='menu1.html'"
+        ></button></div>
+      </div>
+      <div class="btnp1">
+        <button class="btnP">
+          <a href="policy.html" alt="Broken Link">policy </a>
+        </button>
+      </div>
+
+      <div class="btnc1">
+        <button class="btnC">
+          <a href="terms.html" alt="Broken Link">Terms & Conditions </a>
+        </button>
+      </div>
+    </div>
+    <!---
+    <!--Add buttons to initiate auth sequence and sign out
+    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+    <button onclick="sendMail()" id="send-mail">Send mail</button>
+    <div id="content"></div> -->
+    <script src="script.js"></script>
+    <script type="text/javascript">
+      /* exported gapiLoaded */
+      /* exported gisLoaded */
+      /* exported handleAuthClick */
+      /* exported handleSignoutClick */
+
+      // TODO(developer): Set to client ID and API key from the Developer Console
+      const CLIENT_ID =
+        "849383580469-u06jqtjkc905vq8ea6uogasusgir2d6k.apps.googleusercontent.com";
+      const API_KEY = "AIzaSyB2awudvGiEDt3xYy3bP8x4H3PmI-UrB7M";
+      const MAX_MAIL_COUNT = 20;
+
+      // Discovery doc URL for APIs used by the quickstart
+      const DISCOVERY_DOC =
+        "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest";
+
+      // Authorization scopes required by the API; multiple scopes can be
+      // included, separated by spaces.
+      const SCOPES =
+        "https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send";
+
+      let tokenClient;
+      let gapiInited = false;
+      let gisInited = false;
+
+      document.getElementById("lbtn").style.visibility = "hidden";
+      document.getElementById("signout_button").style.visibility = "hidden";
+      document.getElementById("send-mail").style.visibility = "hidden";
+
+      /**
+       * Callback after api.js is loaded.
+       */
+      function gapiLoaded() {
+        gapi.load("client", intializeGapiClient);
+      }
+
+      /**
+       * Callback after the API client is loaded. Loads the
+       * discovery doc to initialize the API.
+       */
+      async function intializeGapiClient() {
+        await gapi.client.init({
+          apiKey: API_KEY,
+          discoveryDocs: [DISCOVERY_DOC],
+        });
+        gapiInited = true;
+        window["gapi"] = gapi;
+        maybeEnableButtons();
+      }
+
+      /**
+       * Callback after Google Identity Services are loaded.
+       */
+      function gisLoaded() {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: "", // defined later
+        });
+        gisInited = true;
+        window["tokenClient"] = tokenClient;
+        maybeEnableButtons();
+      }
+
+      /**
+       * Enables user interaction after all libraries are loaded.
+       */
+      function maybeEnableButtons() {
+        if (gapiInited && gisInited) {
+          document.getElementById("lbtn").style.visibility = "visible";
+        }
+      }
+
+      /**
+       *  Sign in the user upon button click.
+       */
+      function handleAuthClick() {
+        tokenClient.callback = async (resp) => {
+          if (resp.error !== undefined) {
+            throw resp;
+          }
+          /*    document.getElementById("signout_button").style.visibility =
+            "visible";
+          document.getElementById("send-mail").style.visibility = "visible";
+          document.getElementById("authorize_button").innerText = "Refresh";
+          await listEmails();*/
+          console.log(resp.access_token);
+          window["tokenClient"] = tokenClient;
+          //   let tokenauth = "";
+          localStorage.setItem("tokenaccess", resp.access_token);
+          localStorage.setItem("tokentype", resp.token_type);
+          localStorage.setItem("tokentime", resp.expires_in);
+          localStorage.setItem("tokenscope", resp.scope);
+
+          document.getElementById("menu").style.visibility = "visible";
+          document.getElementById("menu").click();
+        };
+
+        if (gapi.client.getToken() === null) {
+          // Prompt the user to select a Google Account and ask for consent to share their data
+          // when establishing a new session.
+          tokenClient.requestAccessToken({ prompt: "consent" });
+          //    let tokenauth = "";
+          // console.log(gapi.client.getToken());
+          //  localStorage.setItem("tokenauth", gapi.client.getToken());
+        } else {
+          // Skip display of account chooser and consent dialog for an existing session.
+          tokenClient.requestAccessToken({ prompt: "" });
+        }
+      }
+      //---parse payload
+      function parseMailMeta({ result }) {
+        const obj = {};
+        obj["Snippet"] = result.snippet;
+        for (let i in result.payload.headers) {
+          const header = result.payload.headers[i];
+          if (header.name === "Date") {
+            obj["Date"] = header.value;
+          } else if (header.name === "Subject") {
+            obj["Subject"] = header.value;
+          } else if (header.name === "From") {
+            obj["From"] = header.value;
+          }
+        }
+        return obj;
+      }
+      //----
+      /**
+       *  Sign out the user upon button click.
+       */
+      function handleSignoutClick() {
+        const token = gapi.client.getToken();
+        if (token !== null) {
+          google.accounts.oauth2.revoke(token.access_token);
+          gapi.client.setToken("");
+          document.getElementById("content").innerText = "";
+          document.getElementById("authorize_button").innerText = "Authorize";
+          document.getElementById("signout_button").style.visibility = "hidden";
+        }
+      }
+      //--render mail list
+      function renderMailList(list) {
+        return list.map(
+          (i) =>
+            '<li class="list-item">' +
+            '<div class="from">' +
+            i.From +
+            "</div>" +
+            '<div class="content">' +
+            "<b>" +
+            i.Subject +
+            "</b>" +
+            "<p>" +
+            i.Snippet +
+            "</p>" +
+            "</div>" +
+            '<div class="date">' +
+            i.Date +
+            "</div>" +
+            "</li>"
+        );
+      }
+      //---
+      /**
+       * Print all messages in users inbox
+       */
+      async function listEmails() {
+        let response;
+        try {
+          response = await gapi.client.gmail.users.messages.list({
+            userId: "me",
+            maxResults: MAX_MAIL_COUNT,
+            labelIds: ["INBOX"],
+          });
+        } catch (err) {
+          document.getElementById("content").innerText = err.message;
+          return;
+        }
+        const labels = response.result.messages;
+        if (!labels || labels.length == 0) {
+          document.getElementById("content").innerText = "No labels found.";
+          return;
+        }
+        const promises = [];
+        labels.forEach((i) =>
+          promises.push(
+            gapi.client.gmail.users.messages.get({
+              userId: "me",
+              id: i.id,
+            })
+          )
+        );
+        Promise.all([...promises])
+          .then((resp) => {
+            const metaArr = resp.map((i) => parseMailMeta(i));
+            const content = document.getElementById("content");
+            content.innerHTML =
+              content.innerHTML +
+              "<ul>" +
+              renderMailList(metaArr).join("") +
+              "</ul>";
+          })
+          .catch((err) => {
+            const content = document.getElementById("content");
+            content.innerHTML = "Something went wrong";
+          });
+      }
+      function sendMessage(auth) {
+        var gmail = google.gmail("v1");
+        var raw = makeBody(
+          "xxxxxxxx@hotmail.com",
+          "xxxxxxx@gmail.com",
+          "test subject",
+          "test message"
+        );
+      }
+
+      gmail.users.messages.send(
+        {
+          auth: auth,
+          userId: "me",
+          resource: {
+            raw: raw,
+          },
+        },
+        function (err, response) {
+          console.log(err || response);
+        }
+      );
+      async function sendMail() {
+        var raw = makeBody(
+          "moderatedtesting@gmail.com",
+          "salonimpb@gmail.com",
+          "demo",
+          "mail"
+        );
+        await gapi.client.gmail.users.messages.send({
+          userId: "me",
+          resource: {
+            raw: raw,
+          },
+        });
+      }
+
+      /*   //---- For sending email----
+      function makeBody(to, from, subject, message) {
+        const payload =
+          "From: " +
+          from +
+          "\r\n" +
+          "To: " +
+          to +
+          "\r\n" +
+          "Subject: " +
+          subject +
+          "\r\n\r\n" +
+          message;
+        var encodedEmail = btoa(payload)
+          .replace(/\+/g, "-")
+          .replace(/\//g, "_");
+        return encodedEmail;
+      }
+      async function sendMail() {
+        var raw = makeBody(
+          "abhinavpawar8@gmail.com",
+          "moderatedtesting@gmail.com",
+          "test subject",
+          "test message"
+        );
+        await gapi.client.gmail.users.messages.send({
+          userId: "me",
+          resource: {
+            raw: raw,
+          },
+        });
+      }
+      function sendMessage(auth) {
+        var gmail = google.gmail("v1");
+        var raw = makeBody(
+          "xxxxxxxx@hotmail.com",
+          "xxxxxxx@gmail.com",
+          "test subject",
+          "test message"
+        );
+        gmail.users.messages.send(
+          {
+            auth: auth,
+            userId: "me",
+            resource: {
+              raw: raw,
+            },
+          },
+          function (err, response) {
+            console.log(err || response);
+          }
+        );
+      }
+      //---- For sending email----*/
+    </script>
+    <script
+      async
+      defer
+      src="https://apis.google.com/js/api.js"
+      onload="gapiLoaded()"
+    ></script>
+    <script
+      async
+      defer
+      src="https://accounts.google.com/gsi/client"
+      onload="gisLoaded()"
+    ></script>
+  </body>
+</html>
